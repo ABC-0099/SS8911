@@ -1,0 +1,6 @@
+create database SS8911;
+create user 'SS8911'@'localhost' identified by '1234';
+grant all privileges on SS8911.* to SS8911@localhost;
+flush privileges;
+show databases;
+exit
