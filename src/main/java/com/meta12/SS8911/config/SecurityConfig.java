@@ -37,8 +37,10 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/siteUser/login")
+                        .loginPage("/siteUser/login")          // GET - 로그인 페이지
+                        .loginProcessingUrl("/siteUser/login") // POST - 실제 로그인 처리 ← 이거 추가
                         .defaultSuccessUrl("/")
+                        .failureUrl("/siteUser/login?error")   // 실패 시 ← 이거 추가
                         .permitAll()
                 )
                 .logout(logout -> logout
