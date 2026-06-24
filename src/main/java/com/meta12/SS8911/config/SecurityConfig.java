@@ -22,7 +22,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/",
                                 "/siteUser/login",
-                                "/siteUser/signup",
+                                "/siteUser/chuga",
+                                "/siteUser/chugaProc",
                                 "/notices",
                                 "/board/**",
                                 "/faq",
@@ -38,15 +39,17 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/siteUser/login")
+                        .loginProcessingUrl("/siteUser/login")
                         .defaultSuccessUrl("/")
+                        .failureUrl("/siteUser/login?error")
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
                         .permitAll()
-                )
-                .csrf(csrf -> csrf.disable());
+                );
+        // ★ csrf.disable() 제거 → CSRF 기본 활성화
 
         return http.build();
     }

@@ -12,9 +12,9 @@
     home | notices | board | lectures | game | faq | mypage
   ================================
 -->
-<link th:href="@{/css/layout/navbar.css}" rel="stylesheet">
 
 <nav th:fragment="navbar(currentMenu)" class="navbar">
+  <link th:href="@{/css/layout/navbar.css}" rel="stylesheet">
   <div class="navbar-inner">
 
     <!-- 로고 -->
@@ -108,18 +108,11 @@
 
       <!-- 비로그인 상태: 로그인 + 회원가입 버튼 -->
       <th:block sec:authorize="isAnonymous()">
-        <a class="btn-login" th:href="@{/login}">로그인</a>
-        <a class="btn-signup" th:href="@{/signup}">회원가입</a>
+        <a class="btn-login" th:href="@{/siteUser/login}">로그인</a>
+        <a class="btn-signup" th:href="@{/siteUser/chuga}">회원가입</a>
       </th:block>
 
       <!-- 로그인 상태: 유저이름 + 로그아웃 버튼 -->
-      <!--
-        sec:authentication="name" → Spring Security UserDetails.getUsername() 값
-        닉네임을 따로 쓰고 싶으면:
-          th:text="${#authentication.principal.nickname}"  (커스텀 UserDetails 필드)
-          또는 Controller에서 model.addAttribute("loginUser", ...) 넘겨서
-          th:text="${loginUser.name}" 사용
-      -->
       <th:block sec:authorize="isAuthenticated()">
         <a class="user-chip" th:href="@{/mypage}">
           <span class="user-avatar"
@@ -135,33 +128,27 @@
 
     </div>
   </div>
-</nav>
 
-
-
-<script th:inline="javascript">
-  // 햄버거 토글
-  document.getElementById('navToggle')?.addEventListener('click', () => {
-    document.getElementById('navMenu')?.classList.toggle('open');
-  });
-
-  // 모바일 드롭다운 토글
-  document.querySelectorAll('.has-dropdown .dropdown-trigger').forEach(trigger => {
-    trigger.addEventListener('click', e => {
-      if (window.innerWidth <= 768) {
-        e.preventDefault();
-        trigger.closest('.has-dropdown').classList.toggle('open');
+  <script th:inline="javascript">
+    document.getElementById('navToggle')?.addEventListener('click', () => {
+      document.getElementById('navMenu')?.classList.toggle('open');
+    });
+    document.querySelectorAll('.has-dropdown .dropdown-trigger').forEach(trigger => {
+      trigger.addEventListener('click', e => {
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          trigger.closest('.has-dropdown').classList.toggle('open');
+        }
+      });
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.has-dropdown')) {
+        document.querySelectorAll('.has-dropdown.open').forEach(el => el.classList.remove('open'));
       }
     });
-  });
+  </script>
 
-  // 외부 클릭 시 드롭다운 닫기
-  document.addEventListener('click', e => {
-    if (!e.target.closest('.has-dropdown')) {
-      document.querySelectorAll('.has-dropdown.open').forEach(el => el.classList.remove('open'));
-    }
-  });
-</script>
+</nav>
 
 </body>
 </html>

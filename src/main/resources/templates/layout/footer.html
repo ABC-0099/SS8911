@@ -1,20 +1,16 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link th:href="@{/css/layout/footer.css}" rel="stylesheet" />
-</head>
 <body>
 
 <!--
   ================================
   사용법 (다른 페이지에서 삽입):
-  <div th:replace="~{fragments/footer :: footer}"></div>
+  <div th:replace="~{layout/footer :: footer}"></div>
   ================================
 -->
 
 <footer th:fragment="footer" class="site-footer">
+  <link th:href="@{/css/layout/footer.css}" rel="stylesheet" />
   <div class="footer-inner">
 
     <!-- 상단: 로고 + 링크 -->
@@ -89,7 +85,6 @@
 
   </div>
 </footer>
-
 
 </body>
 </html>
