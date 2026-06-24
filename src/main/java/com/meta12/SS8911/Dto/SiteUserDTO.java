@@ -3,11 +3,15 @@ package com.meta12.SS8911.Dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor // 이 어노테이션 추가 (Lombok)
 public class SiteUserDTO {
+    // ... 필드들
+
     private Long id;
 
     @NotBlank(message = "아이디는 필수입니다.")
