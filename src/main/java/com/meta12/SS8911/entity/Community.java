@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 @Entity
-@Getter
-@Setter
+@Getter @Setter
 public class Community {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,10 +19,12 @@ public class Community {
     private String content;
 
     @Enumerated(EnumType.STRING)
-    private Category category;
+    private Category category; // CULTURAL, REVIEW, FREE
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private SiteUser author;
+    private SiteUser author; // 작성자 정보
 
-    private LocalDateTime createdDate; // 이거 추가
+    // 생성일, 수정일 등...
+
+    private LocalDateTime createdDate;
 }
