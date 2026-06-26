@@ -24,11 +24,13 @@ public class CommunityController {
 
     // 목록
     @GetMapping
-    public String list(@RequestParam(required = false) Category category, Model model) {
-        List<Community> posts = communityService.getCommunityPosts(category);
-        // HTML(list.html)에서 참조하는 이름과 일치시키기 위해 postList 사용
+    public String list(@RequestParam(required = false) Category category,
+                       @RequestParam(required = false, defaultValue = "newest") String sort,
+                       Model model) {
+        List<Community> posts = communityService.getCommunityPosts(category, sort);
         model.addAttribute("postList", posts);
         model.addAttribute("category", category);
+        model.addAttribute("sort", sort);
         return "community/list";
     }
 
@@ -52,7 +54,45 @@ public class CommunityController {
     public String detail(@PathVariable Long id, Model model) {
         Community post = communityService.getPost(id);
         model.addAttribute("post", post);
-        // 파일명이 view.html이므로 "community/view"를 리턴
         return "community/view";
+    }
+
+    // 수정 폼
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model, Principal principal) {
+        Community post = communityService.getPost(id);
+        SiteUser user = siteUserService.getUserByUsername(principal.getName());
+
+        // 권한 체크 (작성자 또는 관리자)
+        boolean isAuthor = post.getAuthor().getId().equals(user.getId());
+        boolean isAdmin = user.getRole().name().equals("ADMIN");
+        if (!isAuthor && !isAdmin) {
+            return "redirect:/community/" + id;
+        }
+
+        CommunityDTO dto = new CommunityDTO();
+        dto.setTitle(post.getTitle());
+        dto.setContent(post.getContent());
+        dto.setCategory(post.getCategory());
+
+        model.addAttribute("communityDTO", dto);
+        model.addAttribute("postId", id);
+        return "community/edit";
+    }
+
+    // 수정 처리
+    @PostMapping("/{id}/edit")
+    public String edit(@PathVariable Long id, CommunityDTO dto, Principal principal) {
+        SiteUser user = siteUserService.getUserByUsername(principal.getName());
+        communityService.update(id, dto, user);
+        return "redirect:/community/" + id;
+    }
+
+    // 삭제 처리
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable Long id, Principal principal) {
+        SiteUser user = siteUserService.getUserByUsername(principal.getName());
+        communityService.delete(id, user);
+        return "redirect:/community";
     }
 }
