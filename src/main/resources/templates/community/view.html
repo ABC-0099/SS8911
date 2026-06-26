@@ -4,10 +4,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title th:text="|${post.title} — 끼역띠귿|">게시글 — 끼역띠귿</title>
+  <title>끼역띠귿 — 커뮤니티</title>
   <link rel="stylesheet" th:href="@{/css/layout/navbar.css}" />
   <link rel="stylesheet" th:href="@{/css/layout/footer.css}" />
-  <link rel="stylesheet" th:href="@{/css/community/view.css}" />
+  <link rel="stylesheet" th:href="@{/css/community/list.css}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
@@ -15,149 +15,146 @@
 </head>
 <body>
 
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">
+  끼역띠귿 자유게시판(커뮤니티) 페이지. 일상일기, 문화교류, 학습후기, 자유 태그로 분류된 게시글 목록을 보여주며 댓글, 좋아요, 공유, 팔로우, 신고 기능을 제공합니다.
+</h2>
+
 <div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
 
 <div th:replace="~{layout/navbar :: navbar(currentMenu='community')}"></div>
 
-<!-- 본문 -->
-<div class="page-wrap">
+<!-- 헤더 -->
+<div class="page-header">
+  <h1>자유게시판</h1>
+  <p>일상, 문화, 학습 후기를 자유롭게 나눠보세요</p>
+</div>
 
-  <!-- 뒤로가기 -->
-  <a th:href="@{/community}" class="back-link">← 목록으로</a>
+<!-- 태그 탭 -->
+<div class="filter-bar">
+  <div class="tabs">
+    <button class="tab active">전체</button>
+    <button class="tab">일상일기</button>
+    <button class="tab">문화교류</button>
+    <button class="tab">학습후기</button>
+    <button class="tab">자유</button>
+  </div>
+</div>
 
-  <!-- 게시글 카드 -->
-  <div class="post-card">
+<!-- 검색/정렬/글쓰기 -->
+<div class="toolbar">
+  <div class="search-wrap">
+    <span>🔍</span>
+    <input type="text" placeholder="제목, 내용, 태그로 검색" />
+  </div>
+  <div class="toolbar-right">
+    <select class="sort-select">
+      <option>최신순</option>
+      <option>인기순</option>
+      <option>댓글순</option>
+    </select>
+    <button class="write-btn">✏️ 글쓰기</button>
+  </div>
+</div>
 
-    <!-- 태그 -->
-    <span class="post-tag"
-          th:classappend="${post.category.name() == 'DIARY'   ? 'pt-diary'   :
-                            post.category.name() == 'CULTURE' ? 'pt-culture' :
-                            post.category.name() == 'REVIEW'  ? 'pt-review'  : 'pt-free'}"
-          th:text="${post.category.name() == 'DIARY'   ? '일상일기'   :
-                     post.category.name() == 'CULTURE' ? '문화교류'   :
-                     post.category.name() == 'REVIEW'  ? '학습후기'   : '자유'}">일상일기</span>
+<!-- 게시글 목록 -->
+<div class="post-wrap">
 
-    <!-- 제목 -->
-    <div class="post-title" th:text="${post.title}">오늘 카페에서 한글로 주문했어요!</div>
-
-    <!-- 작성자 -->
-    <div class="post-author-row">
-      <div class="post-avatar"
-           th:text="${#strings.substring(post.author.username, 0, 1)}">리</div>
-      <div>
-        <div class="author-name" th:text="${post.author.username}">Li Wei</div>
-        <div class="author-meta"
-             th:text="${post.author.country + ' · ' + #temporals.format(post.createdAt, 'yyyy.MM.dd HH:mm')}">중국 · 2025.06.24 14:30</div>
-      </div>
-      <!-- 본인 글이 아닐 때만 팔로우 버튼 표시 -->
-      <button class="follow-btn"
-              sec:authorize="isAuthenticated()"
-              th:unless="${post.author.username == #authentication.name}"
-              onclick="toggleFollow(this)">팔로우</button>
-    </div>
-
-    <!-- 본문 -->
-    <div class="post-body" th:text="${post.content}">
-      처음으로 또박또박 한국어로 주문했는데 사장님이 알아들어주셔서 너무 기뻤어요.
-    </div>
-
-    <!-- 이미지 첨부 (있을 때만) -->
-    <div class="post-image" th:if="${post.imagePath != null}">
-      <img th:src="${post.imagePath}" alt="게시글 이미지" />
-    </div>
-
-    <!-- 액션 바 -->
-    <div class="post-actions">
-      <button class="action-btn" id="likeBtn"
-              th:classappend="${liked ? 'liked' : ''}"
-              th:data-id="${post.id}"
-              onclick="toggleLike(this)">
-        <span th:text="${liked ? '❤️' : '🤍'}">🤍</span>
-        <span id="likeCount" th:text="${post.likeCount}">24</span>
-      </button>
-      <button class="action-btn">
-        💬 <span th:text="${post.commentCount}">8</span>
-      </button>
-      <button class="action-btn" onclick="sharePost()">↗ 공유</button>
-      <div class="action-spacer"></div>
-      <button class="report-btn"
-              th:unless="${post.author.username == #authentication.name}"
-              sec:authorize="isAuthenticated()"
-              onclick="reportPost()">🚩 신고</button>
-    </div>
-
-    <!-- 수정/삭제 (본인 글일 때만) -->
-    <div class="owner-actions"
-         sec:authorize="isAuthenticated()"
-         th:if="${post.author.username == #authentication.name}">
-      <a th:href="@{/community/{id}/edit(id=${post.id})}">
-        <button class="edit-btn">✏️ 수정</button>
-      </a>
-      <form th:action="@{/community/{id}/delete(id=${post.id})}" method="post"
-            onsubmit="return confirm('정말 삭제할까요?')">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-        <button type="submit" class="del-btn">🗑 삭제</button>
-      </form>
-    </div>
-
+  <div class="info-box">
+    🔔 댓글 · 답변 · 좋아요 알림은 우측 상단 프로필에서 확인할 수 있어요. 스팸이나 부적절한 게시물은 신고 버튼으로 알려주세요.
   </div>
 
-  <!-- 댓글 섹션 -->
-  <div class="comment-section">
-    <h2>
-      댓글
-      <span class="comment-count" th:text="${#lists.size(comments)}">3</span>
-    </h2>
-
-    <!-- 댓글 입력 (로그인 시) -->
-    <div class="comment-input-wrap" sec:authorize="isAuthenticated()">
-      <div class="mini-avatar"
-           th:text="${#strings.substring(#authentication.name, 0, 1)}">유</div>
-      <div class="comment-box">
-        <textarea id="commentInput" placeholder="댓글을 입력하세요..."></textarea>
-        <div class="comment-box-footer">
-          <button class="comment-submit"
-                  th:data-post-id="${post.id}"
-                  onclick="submitComment(this)">등록</button>
-        </div>
+  <div class="post">
+    <div class="post-top">
+      <div class="post-avatar">리</div>
+      <div>
+        <div class="post-author">Li Wei</div>
+        <div class="post-meta">중국 · 5분 전</div>
       </div>
+      <button class="follow-btn">팔로우</button>
     </div>
-
-    <!-- 비로그인 안내 -->
-    <div class="empty-comments" sec:authorize="isAnonymous()">
-      <a th:href="@{/login}" style="color:var(--navy); font-weight:600;">로그인</a> 후 댓글을 달 수 있어요.
+    <span class="post-tag pt-diary">일상일기</span>
+    <div class="post-title">오늘 카페에서 한글로 주문했어요! 😊</div>
+    <div class="post-text">처음으로 또박또박 한국어로 주문했는데 사장님이 알아들어주셔서 너무 기뻤어요. 작은 성공이지만 자신감이 생겼어요!</div>
+    <div class="post-image pi-1">☕</div>
+    <div class="post-footer">
+      <span class="pf-action liked">❤️ 24</span>
+      <span class="pf-action">💬 8</span>
+      <span class="pf-action">↗ 공유</span>
+      <span class="pf-spacer"></span>
+      <span class="pf-report">🚩 신고</span>
     </div>
+  </div>
 
-    <!-- 댓글 목록 -->
-    <div class="comment-list">
-
-      <div class="comment-item" th:each="comment : ${comments}">
-        <div class="mini-avatar"
-             th:style="${'background: linear-gradient(135deg,' + (comment.author.country == '중국' ? '#a8e6cf,#89d4f5' : '#9FE1CB,#185FA5') + ')'}"
-             th:text="${#strings.substring(comment.author.username, 0, 1)}">리</div>
-        <div class="comment-body">
-          <div class="comment-header">
-            <span class="comment-author" th:text="${comment.author.username}">Li Wei</span>
-            <span class="comment-time"
-                  th:text="${#temporals.format(comment.createdAt, 'MM.dd HH:mm')}">06.24 14:45</span>
-          </div>
-          <div class="comment-text" th:text="${comment.content}">정말 대단해요! 저도 연습해볼게요.</div>
-          <div class="comment-actions">
-            <button class="comment-act" onclick="toggleCommentLike(this)">🤍 좋아요</button>
-            <button class="comment-act"
-                    th:if="${comment.author.username == #authentication.name}"
-                    sec:authorize="isAuthenticated()"
-                    th:data-comment-id="${comment.id}"
-                    onclick="deleteComment(this)">삭제</button>
-          </div>
-        </div>
+  <div class="post">
+    <div class="post-top">
+      <div class="post-avatar" style="background:linear-gradient(135deg,#9FE1CB,#B5D4F4);">나</div>
+      <div>
+        <div class="post-author">Nguyen Thi Lan</div>
+        <div class="post-meta">베트남 · 1시간 전</div>
       </div>
+      <button class="follow-btn following">팔로잉</button>
+    </div>
+    <span class="post-tag pt-culture">문화교류</span>
+    <div class="post-title">한국 명절 '추석' vs 베트남 '쭝투 축제'</div>
+    <div class="post-text">둘 다 보름달을 보면서 가족과 모이는 명절인데, 음식이랑 노는 방법이 조금씩 달라서 신기했어요. 다들 추석 때 뭐 드세요?</div>
+    <div class="post-image pi-2">🌕</div>
+    <div class="post-footer">
+      <span class="pf-action">❤️ 41</span>
+      <span class="pf-action">💬 15</span>
+      <span class="pf-action">↗ 공유</span>
+      <span class="pf-spacer"></span>
+      <span class="pf-report">🚩 신고</span>
+    </div>
+  </div>
 
-      <!-- 댓글 없을 때 -->
-      <div class="empty-comments" th:if="${#lists.isEmpty(comments)}">
-        아직 댓글이 없어요. 첫 번째 댓글을 남겨보세요! 💬
+  <div class="post">
+    <div class="post-top">
+      <div class="post-avatar" style="background:linear-gradient(135deg,var(--mint-dark),var(--mint));">김</div>
+      <div>
+        <div class="post-author">김마리아</div>
+        <div class="post-meta">필리핀 · 3시간 전</div>
       </div>
+      <button class="follow-btn">팔로우</button>
+    </div>
+    <span class="post-tag pt-review">학습후기</span>
+    <div class="post-title">레벨 3 통과했습니다! 다음은 회화예요</div>
+    <div class="post-text">단어 월드까지 끝내고 드디어 문장 월드 진입했어요. 매일 30분씩 게임으로 하다 보니 어느새 여기까지 왔네요. 같이 힘내요!</div>
+    <div class="post-voice">
+      <div class="voice-play">▶</div>
+      <div class="voice-bars">
+        <span style="height:8px;"></span><span style="height:14px;"></span><span style="height:6px;"></span>
+        <span style="height:18px;"></span><span style="height:10px;"></span><span style="height:15px;"></span>
+        <span style="height:7px;"></span><span style="height:12px;"></span>
+      </div>
+      <span class="vlabel">0:14</span>
+    </div>
+    <div class="post-footer">
+      <span class="pf-action">❤️ 67</span>
+      <span class="pf-action">💬 22</span>
+      <span class="pf-action">↗ 공유</span>
+      <span class="pf-spacer"></span>
+      <span class="pf-report">🚩 신고</span>
+    </div>
+  </div>
 
+  <div class="post">
+    <div class="post-top">
+      <div class="post-avatar" style="background:linear-gradient(135deg,#89d4f5,var(--navy));">박</div>
+      <div>
+        <div class="post-author">박투안</div>
+        <div class="post-meta">베트남 · 5시간 전</div>
+      </div>
+      <button class="follow-btn">팔로우</button>
+    </div>
+    <span class="post-tag pt-free">자유</span>
+    <div class="post-title">한국어 공부하면서 가장 헷갈렸던 단어 있어요?</div>
+    <div class="post-text">저는 '다르다'랑 '틀리다'가 계속 헷갈려요. 비슷한 경험 있으신 분 있나요? 같이 이야기해봐요.</div>
+    <div class="post-footer">
+      <span class="pf-action">❤️ 19</span>
+      <span class="pf-action">💬 31</span>
+      <span class="pf-action">↗ 공유</span>
+      <span class="pf-spacer"></span>
+      <span class="pf-report">🚩 신고</span>
     </div>
   </div>
 
@@ -166,68 +163,36 @@
 <div th:replace="~{layout/footer :: footer}"></div>
 
 <script>
-  // 좋아요 토글
-  function toggleLike(btn) {
-    const postId = btn.dataset.id;
-    fetch(`/community/${postId}/like`, { method: 'POST',
-      headers: { 'X-CSRF-TOKEN': document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1] || '' }
-    })
-    .then(r => r.json())
-    .then(data => {
-      btn.classList.toggle('liked', data.liked);
-      btn.querySelector('span').textContent = data.liked ? '❤️' : '🤍';
-      document.getElementById('likeCount').textContent = data.likeCount;
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
     });
-  }
+  });
 
-  // 댓글 등록
-  function submitComment(btn) {
-    const postId = btn.dataset.postId;
-    const content = document.getElementById('commentInput').value.trim();
-    if (!content) return;
+  document.querySelectorAll('.follow-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      btn.classList.toggle('following');
+      btn.textContent = btn.classList.contains('following') ? '팔로잉' : '팔로우';
+    });
+  });
 
-    fetch(`/community/${postId}/comment`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1] || ''
-      },
-      body: JSON.stringify({ content })
-    })
-    .then(() => location.reload());
-  }
+  document.querySelectorAll('.pf-action').forEach(act => {
+    if (act.textContent.includes('❤️')) {
+      act.addEventListener('click', (e) => {
+        e.stopPropagation();
+        act.classList.toggle('liked');
+      });
+    }
+  });
 
-  // 팔로우 토글
-  function toggleFollow(btn) {
-    btn.classList.toggle('following');
-    btn.textContent = btn.classList.contains('following') ? '팔로잉' : '팔로우';
-  }
-
-  // 댓글 좋아요
-  function toggleCommentLike(btn) {
-    btn.classList.toggle('liked');
-    btn.textContent = btn.classList.contains('liked') ? '❤️ 좋아요' : '🤍 좋아요';
-  }
-
-  // 댓글 삭제
-  function deleteComment(btn) {
-    if (!confirm('댓글을 삭제할까요?')) return;
-    const commentId = btn.dataset.commentId;
-    fetch(`/community/comment/${commentId}/delete`, { method: 'POST',
-      headers: { 'X-CSRF-TOKEN': document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1] || '' }
-    })
-    .then(() => location.reload());
-  }
-
-  // 공유
-  function sharePost() {
-    navigator.clipboard.writeText(location.href).then(() => alert('링크가 복사되었어요!'));
-  }
-
-  // 신고
-  function reportPost() {
-    alert('신고가 접수되었습니다. 운영팀이 확인 후 처리할게요.');
-  }
+  document.querySelectorAll('.pf-report').forEach(rep => {
+    rep.addEventListener('click', (e) => {
+      e.stopPropagation();
+      alert('신고가 접수되었습니다. 운영팀이 확인 후 처리할게요.');
+    });
+  });
 </script>
 
 </body>

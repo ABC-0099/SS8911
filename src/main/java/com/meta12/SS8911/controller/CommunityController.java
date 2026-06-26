@@ -14,43 +14,45 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
-    @Controller
-    @RequestMapping("/community")
-    @RequiredArgsConstructor
-    public class CommunityController {
+@Controller
+@RequestMapping("/community")
+@RequiredArgsConstructor
+public class CommunityController {
 
-        private final CommunityService communityService;
-        private final SiteUserService siteUserService;
+    private final CommunityService communityService;
+    private final SiteUserService siteUserService;
 
-        // 목록
-        @GetMapping
-        public String list(@RequestParam(required = false) Category category, Model model) {
-            List<Community> posts = communityService.getCommunityPosts(category);
-            model.addAttribute("posts", posts);
-            model.addAttribute("category", category);
-            return "community/list";
-        }
-
-        // 글쓰기 폼
-        @GetMapping("/write")
-        public String writeForm(Model model) {
-            model.addAttribute("communityDTO", new CommunityDTO());
-            return "community/write";
-        }
-
-        // 글쓰기 처리
-        @PostMapping("/write")
-        public String write(CommunityDTO dto, Principal principal) {
-            SiteUser user = siteUserService.getUserByUsername(principal.getName());
-            communityService.create(dto, user);
-            return "redirect:/community";
-        }
-
-        // 상세보기
-        @GetMapping("/{id}")
-        public String detail(@PathVariable Long id, Model model) {
-            Community post = communityService.getPost(id);
-            model.addAttribute("post", post);
-            return "community/detail";
-        }
+    // 목록
+    @GetMapping
+    public String list(@RequestParam(required = false) Category category, Model model) {
+        List<Community> posts = communityService.getCommunityPosts(category);
+        // HTML(list.html)에서 참조하는 이름과 일치시키기 위해 postList 사용
+        model.addAttribute("postList", posts);
+        model.addAttribute("category", category);
+        return "community/list";
     }
+
+    // 글쓰기 폼
+    @GetMapping("/write")
+    public String writeForm(Model model) {
+        model.addAttribute("communityDTO", new CommunityDTO());
+        return "community/write";
+    }
+
+    // 글쓰기 처리
+    @PostMapping("/write")
+    public String write(CommunityDTO dto, Principal principal) {
+        SiteUser user = siteUserService.getUserByUsername(principal.getName());
+        communityService.create(dto, user);
+        return "redirect:/community";
+    }
+
+    // 상세보기
+    @GetMapping("/{id}")
+    public String detail(@PathVariable Long id, Model model) {
+        Community post = communityService.getPost(id);
+        model.addAttribute("post", post);
+        // 파일명이 view.html이므로 "community/view"를 리턴
+        return "community/view";
+    }
+}
