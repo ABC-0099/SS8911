@@ -147,23 +147,39 @@
 
     <!-- 채팅창 -->
     <div class="chat-panel" id="chat-panel">
-        <div class="chat-panel-head">
-            <div class="chat-panel-title">
-                <span class="chat-status-dot" id="chat-status-dot"></span>
-                실시간 채팅
+
+        <!-- ① 로비 목록 화면 -->
+        <div class="chat-view chat-view-rooms" id="chat-view-rooms">
+            <div class="chat-panel-head">
+                <div class="chat-panel-title">실시간 채팅 — 로비 선택</div>
+                <button type="button" class="chat-panel-close" onclick="toggleChat()">✕</button>
             </div>
-            <button type="button" class="chat-panel-close" onclick="toggleChat()">✕</button>
+            <div class="chat-room-list" id="chat-room-list">
+                <div class="chat-room-loading">로비 목록을 불러오는 중...</div>
+            </div>
         </div>
 
-        <div class="chat-messages" id="chat-messages">
-            <div class="chat-empty" id="chat-empty">아직 대화가 없어요. 첫 메시지를 남겨보세요 💬</div>
-        </div>
+        <!-- ② 채팅 화면 -->
+        <div class="chat-view chat-view-room" id="chat-view-room" style="display:none;">
+            <div class="chat-panel-head">
+                <button type="button" class="chat-room-back" onclick="leaveRoom()">←</button>
+                <div class="chat-panel-title">
+                    <span class="chat-status-dot" id="chat-status-dot"></span>
+                    <span id="chat-room-name">로비</span>
+                </div>
+                <button type="button" class="chat-panel-close" onclick="toggleChat()">✕</button>
+            </div>
 
-        <form class="chat-input-row" id="chat-form" onsubmit="return false;">
-            <input type="text" id="chat-input" class="chat-input"
-                   placeholder="메시지를 입력하세요" maxlength="500" autocomplete="off" />
-            <button type="submit" class="chat-send-btn" id="chat-send-btn">전송</button>
-        </form>
+            <div class="chat-messages" id="chat-messages">
+                <div class="chat-empty" id="chat-empty">아직 대화가 없어요. 첫 메시지를 남겨보세요 💬</div>
+            </div>
+
+            <form class="chat-input-row" id="chat-form" onsubmit="return false;">
+                <input type="text" id="chat-input" class="chat-input"
+                       placeholder="메시지를 입력하세요" maxlength="500" autocomplete="off" />
+                <button type="submit" class="chat-send-btn" id="chat-send-btn">전송</button>
+            </form>
+        </div>
     </div>
 </div>
 

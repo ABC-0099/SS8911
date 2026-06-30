@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 public class ChatMessageViewDTO {
 
     private Long id;
+    private Long roomId;
     private String username;
     private String content;
     private String time; // HH:mm 형태로 가공해서 내려줌
@@ -24,6 +25,7 @@ public class ChatMessageViewDTO {
     public static ChatMessageViewDTO from(ChatMessage message) {
         return ChatMessageViewDTO.builder()
                 .id(message.getId())
+                .roomId(message.getRoom().getId())
                 .username(message.getAuthor().getUsername())
                 .content(message.getContent())
                 .time(message.getCreatedDate().format(DateTimeFormatter.ofPattern("HH:mm")))
