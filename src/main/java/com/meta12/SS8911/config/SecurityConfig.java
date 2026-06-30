@@ -33,7 +33,9 @@ public class SecurityConfig {
                                 "/css/**",
                                 "/js/**",
                                 "/images/**",
-                                "/fonts/**"
+                                "/fonts/**",
+                                "/ws/chat/**",
+                                "/api/chat/history"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -48,8 +50,12 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
                         .permitAll()
+                )
+                .csrf(csrf -> csrf
+                        // WebSocket 핸드셰이크는 STOMP 프레임 자체로 인증되므로 CSRF 토큰 검사에서 제외
+                        .ignoringRequestMatchers("/ws/chat/**")
                 );
-        // ★ csrf.disable() 제거 → CSRF 기본 활성화
+        // ★ csrf.disable() 제거 → CSRF 기본 활성화 (다른 요청에는 그대로 적용됨)
 
         return http.build();
     }
