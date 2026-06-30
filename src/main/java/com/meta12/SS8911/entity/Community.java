@@ -22,13 +22,16 @@ public class Community {
     private String content;
 
     @Enumerated(EnumType.STRING)
-    private Category category; // CULTURAL, REVIEW, FREE
+    private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private SiteUser author; // 작성자 정보
-    // 생성일, 수정일 등...
+    private SiteUser author;
+
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "community", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "community", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "community", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommunityFile> files = new ArrayList<>();
 }
