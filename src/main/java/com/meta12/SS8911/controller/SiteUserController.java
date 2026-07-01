@@ -1,6 +1,6 @@
 package com.meta12.SS8911.controller;
 
-import com.meta12.SS8911.Dto.SiteUserDTO;
+import com.meta12.SS8911.dto.SiteUserDTO;
 import com.meta12.SS8911.entity.SiteUser;
 import com.meta12.SS8911.service.SiteUserService;
 import jakarta.validation.Valid;

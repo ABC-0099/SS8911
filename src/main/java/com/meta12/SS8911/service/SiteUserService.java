@@ -1,8 +1,9 @@
 package com.meta12.SS8911.service;
 
-import com.meta12.SS8911.Dto.SiteUserDTO;
+import com.meta12.SS8911.dto.SiteUserDTO;
 import com.meta12.SS8911.config.Role;
 import com.meta12.SS8911.entity.SiteUser;
+import com.meta12.SS8911.exception.DataNotFoundException;
 import com.meta12.SS8911.repository.SiteUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.*;
@@ -47,6 +48,11 @@ public class SiteUserService implements UserDetailsService {
                 .password(siteUser.getPassword())
                 .roles(siteUser.getRole().name())
                 .build();
+    }
+
+    public SiteUser getUser(String username) {
+        return siteUserRepository.findByUsername(username)
+                .orElseThrow(() -> new DataNotFoundException("user not found"));
     }
 
     public SiteUser getUserByUsername(String username) {

@@ -1,4 +1,4 @@
-package com.meta12.SS8911.Dto;
+package com.meta12.SS8911.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

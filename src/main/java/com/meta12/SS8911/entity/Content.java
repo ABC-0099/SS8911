@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -23,6 +25,8 @@ public class Content {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+    private LocalDateTime createdDate;
+
 
     private String fileOrigin;
 
@@ -30,6 +34,7 @@ public class Content {
     private String fileName;       // 영상 저장 파일명
     private String thumbFileName;  // 썸네일 저장 파일명 (추가됨)
     private String attachFileName; // 첨부파일 저장 파일명 (추가됨)
+
 
     @Transient
     private Integer progressPercent;
