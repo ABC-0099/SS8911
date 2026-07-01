@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 @RequiredArgsConstructor
-public class Index {
+public class IndexController {
 
     @GetMapping("/")
     public String list(){

@@ -38,18 +38,11 @@ public class CategoryController {
     private final ContentRepository contentRepository;
     private final ProgressRepository progressRepository;
 
-
-    // 🌟 [추가]: 메인 페이지로 이동하는 매핑
-    @GetMapping("/")
-    public String main() {
-        return "main";
-    }
-
     @GetMapping("/category/list")
     public String list(
             @AuthenticationPrincipal SiteUser user,
             Model model
-    ) {
+    ) { 
         List<Category> categoryList = categoryService.findAll();
 
         Map<Long, List<Content>> contentMap = new LinkedHashMap<>();
