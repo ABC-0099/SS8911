@@ -39,7 +39,7 @@ public class CategoryController {
     private final ProgressRepository progressRepository;
 
 
- 
+
 
     @GetMapping("/category/list")
     public String list(
