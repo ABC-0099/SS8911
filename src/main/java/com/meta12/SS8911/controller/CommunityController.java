@@ -1,6 +1,5 @@
 package com.meta12.SS8911.controller;
 
-import com.meta12.SS8911.Dto.CommunityDTO;
 import com.meta12.SS8911.dto.CommunityDTO;
 import com.meta12.SS8911.config.Category;
 import com.meta12.SS8911.entity.Community;
