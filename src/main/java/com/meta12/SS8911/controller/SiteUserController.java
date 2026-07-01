@@ -7,11 +7,11 @@ import com.meta12.SS8911.dto.SiteUserDTO;
 import com.meta12.SS8911.entity.Comment;
 import com.meta12.SS8911.entity.Community;
 
-import com.meta12.SS8911.entity.Inquiry;
+import com.meta12.SS8911.entity.Qna;
 import com.meta12.SS8911.entity.SiteUser;
 import com.meta12.SS8911.service.CommentService;
 import com.meta12.SS8911.service.CommunityService;
-import com.meta12.SS8911.service.InquiryService;
+import com.meta12.SS8911.service.QnaService;
 import com.meta12.SS8911.service.SiteUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class SiteUserController {
     private final SiteUserService siteUserService;
     private final CommunityService communityService;
     private final CommentService commentService;
-    private final InquiryService inquiryService;
+    private final QnaService qnaService;
 
     @GetMapping("/siteUser/chuga")
     public String chugaForm(SiteUserDTO siteUserDTO) {
@@ -78,8 +78,8 @@ public class SiteUserController {
         Pageable commentPageable = PageRequest.of(commentPage, 5);
         Page<Comment> myComments = commentService.getCommentsByAuthor(user, commentPageable);
 
-        Pageable inquiryPageable = PageRequest.of(inquiryPage, 5);
-        Page<Inquiry> myInquiries = inquiryService.getMyInquiries(user, inquiryPageable);
+        Pageable qnaPageable = PageRequest.of(inquiryPage, 5);
+        Page<Qna> myInquiries = qnaService.getMyQnas(user, qnaPageable);
 
         model.addAttribute("siteUser", user);
         model.addAttribute("myPosts", myPosts);
