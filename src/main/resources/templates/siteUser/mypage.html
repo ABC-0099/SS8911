@@ -27,8 +27,6 @@
             <div class="profile-name" th:text="${siteUser.name}">이름</div>
             <div class="profile-username" th:text="'@' + ${siteUser.username}">아이디</div>
 
-            <!-- 구독 뱃지: subscription 객체가 모델에 있을 때만 표시 -->
-            <!-- 추후 구독 엔티티/서비스 연결 후 Controller에서 model.addAttribute("subscription", ...) 추가하면 자동 표시됨 -->
             <div class="subscribe-badge" th:if="${subscription != null}">
                 ⭐ <span th:text="${subscription.planName}">구독</span> · D-<span th:text="${subscription.remainingDays}">0</span>
             </div>
@@ -204,12 +202,12 @@
             <div class="subtab-panel" id="subtab-myinquiry">
 
                 <div class="my-inquiry-header">
-                    <a th:href="@{/inquiry/write}" class="btn-inquiry-write">✏️ 문의하기</a>
+                    <a th:href="@{/qna/write}" class="btn-inquiry-write">✏️ 문의하기</a>
                 </div>
 
                 <div class="my-post-list" th:if="${!myInquiries.empty}">
                     <a class="my-inquiry-item" th:each="inquiry : ${myInquiries.content}"
-                       th:href="@{/inquiry/{id}(id=${inquiry.id})}">
+                       th:href="@{/qna/{id}(id=${inquiry.id})}">
             <span class="inquiry-status"
                   th:text="${inquiry.status.description}"
                   th:classappend="${inquiry.status.name() == 'ANSWERED'} ? 'answered' : 'pending'"></span>
