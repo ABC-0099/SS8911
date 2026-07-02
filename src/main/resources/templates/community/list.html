@@ -59,7 +59,7 @@
             <div class="post-avatar" th:text="${#strings.substring(post.author.username, 0, 1)}">리</div>
             <div>
                 <div class="post-author" th:text="${post.author.username}">사용자</div>
-                <div class="post-meta" th:text="${post.author.nationality + ' · ' + #temporals.format(post.createdDate, 'MM.dd HH:mm')}">시간</div>
+                <div class="post-meta" th:text="${post.author.nationality + ' · ' + #temporals.format(post.createdDate, 'yy.MM.dd HH:mm')}">시간</div>
             </div>
         </div>
 
