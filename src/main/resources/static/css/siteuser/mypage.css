@@ -384,6 +384,8 @@ html, body {
 
 .my-post-tag {
     flex-shrink: 0;
+    width: 64px;
+    text-align: center;
     font-size: 10.5px;
     font-weight: 700;
     color: var(--mint-dark);
