@@ -38,7 +38,7 @@
     <div class="search-area">
         <div class="search-wrap">
             <span>🔍</span>
-            <input type="text" id="search_kw" placeholder="제목, 내용, 태그로 검색" />
+            <input type="text" id="search_kw" placeholder="제목 및 내용 검색" />
         </div>
         <button type="button" id="btn_search" class="search-btn">검색</button>
     </div>
@@ -52,7 +52,7 @@
 </div>
 
 <div class="post-wrap">
-    <div class="info-box">🔔  커뮤니티 이용 시 욕설·비방·혐오 표현은 삼가 주세요. 타인을 존중하는 건강한 소통 문화를 만들어요.</div>
+    <div class="info-box">🔔 커뮤니티 이용 시 욕설·비방·혐오 표현은 삼가 주세요. 타인을 존중하는 건강한 소통 문화를 만들어요.</div>
 
     <div class="post" th:each="post : ${postList.content}">
         <div class="post-top">
